@@ -18,7 +18,8 @@ public class testBoard extends JPanel implements ActionListener {
 	private testSpaceShip spaceship;
 	private final int DELAY = 10;
 	private Timer timer;
-	private List<testBomb> bombs = new ArrayList<>();
+	private List<testBomb> bombList = new ArrayList<>();
+	private List<testAlien> AlienList = new ArrayList<>();
 	
 	public testBoard() {
 		setSize(1000, 1000);
@@ -31,6 +32,7 @@ public class testBoard extends JPanel implements ActionListener {
 		setFocusable(true);
 		
 		spaceship = new testSpaceShip();
+		
 		
 		timer = new Timer(DELAY, this);
 		timer.start();
@@ -46,7 +48,10 @@ public class testBoard extends JPanel implements ActionListener {
 	private void doDrawing(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.drawImage(spaceship.getImage(), spaceship.getX(), spaceship.getY(), this);
-		for (testBomb b : bombs) {
+		for (testBomb b : bombList) {
+			if (b.y < 0) {
+				bombList.remove(b);
+			}
 			g2d.drawImage(b.ImgIcon, b.x, b.y, this);
 			b.y--;
 		}
@@ -56,7 +61,7 @@ public class testBoard extends JPanel implements ActionListener {
 		testBomb bomb = new testBomb();
 		bomb.x = spaceship.getX();
 		bomb.y = spaceship.getY();
-		bombs.add(bomb);
+		bombList.add(bomb); 
 	}
 	
 	@Override
@@ -66,20 +71,21 @@ public class testBoard extends JPanel implements ActionListener {
 	
 	private void step() {
 		spaceship.move();
-		repaint(spaceship.getX()-10, spaceship.getY()-10, spaceship.getWidth()+20, spaceship.getHeight()+20);
+		repaint();
 	}
 	
 	private class TAdapter extends KeyAdapter {
 		@Override
 		public void keyReleased(KeyEvent e) {
+			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+	        	fire();
+	        }
 			spaceship.keyReleased(e);
 		}
 		
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-	        	fire();
-	        }
+			
 			spaceship.keyPressed(e);
 		}
 	}

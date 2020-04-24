@@ -69,7 +69,6 @@ public class testSpaceShip {
         if (key == KeyEvent.VK_RIGHT) {
             dx = 2;
         }
-        
     }
 
     public void keyReleased(KeyEvent e) {
@@ -83,6 +82,5 @@ public class testSpaceShip {
         if (key == KeyEvent.VK_RIGHT) {
             dx = 0;
         }
-       
     }
 }
