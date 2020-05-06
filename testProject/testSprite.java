@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class testSprite {
 	private boolean visible;
-	private Image image;
+	protected Image image;
 	private boolean dying;
 	int x;
 	int y;
@@ -13,7 +13,7 @@ public class testSprite {
 	
 	int randomX;
 	int min = 1;
-    int max = 1000;
+    int max = 950;
 	
 	public testSprite() {
 		visible = true;
@@ -47,7 +47,7 @@ public class testSprite {
 		this.y = y;
 	}
 	
-	public void setRandomX(int randomX) {
+	public void setRandomX() {
 		Random r = new Random();
     	randomX = r.nextInt((max - min) + min);
 		this.randomX = randomX;

@@ -1,6 +1,5 @@
 package testProject;
 
-import java.awt.Image;
 import javax.swing.ImageIcon;
 
 //Here we will set coordinates for the bomb.
@@ -8,7 +7,6 @@ import javax.swing.ImageIcon;
 public class testAlien extends testSprite {
 	public int x;
 	public int y;
-	private Image image;
 	
 //  Here we call the method that will load the image of the alien ship.
 	public testAlien(int x, int y) {

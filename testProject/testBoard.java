@@ -20,10 +20,12 @@ public class testBoard extends JPanel implements ActionListener {
 	private final int DELAY = 10;
 	private testSpaceShip spaceship;
 	private List<testAlien> alienList;
+	private testShot shot;
 	private List<testShot> shotList = new ArrayList<>();
 	private int killcount = 0;
 	private int score = 0;
 	private String explosionImg = "src/Images/Explosion.jpg";
+	private String message = "Game Over";
 	
 	public testBoard() {
 		initializeBoard();
@@ -38,10 +40,10 @@ public class testBoard extends JPanel implements ActionListener {
 		
 		alienList = new ArrayList<>();
 		
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 5; j++) {
-				testAlien alien = new testAlien(100 * j,
-						1 + 100 * i);
+				testAlien alien = new testAlien(100 * i, -100 * i);
+				alien.setRandomX();
 				alienList.add(alien);
 			}
 		}
@@ -77,6 +79,7 @@ public class testBoard extends JPanel implements ActionListener {
 	private void drawAlien(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		for (testAlien alien : alienList) {
+			System.out.println("alien op positie: " + alien.randomX + " - " + alien.y);
 			g2d.drawImage(alien.getImage(), alien.randomX, alien.y, this);
 			alien.y++;
 		}
@@ -89,7 +92,8 @@ public class testBoard extends JPanel implements ActionListener {
 				shotList.remove(shot);
 			}
 			g2d.drawImage(shot.ImgIcon, shot.x, shot.y, this);
-			shot.y--;
+			g2d.drawImage(shot.ImgIcon, shot.x2, shot.y, this);
+			shot.y = shot.y - 2;
 		}
 	}
 	
@@ -99,7 +103,8 @@ public class testBoard extends JPanel implements ActionListener {
 	private void fire() {
 		testShot shot = new testShot();
 		shot.x = spaceship.getX();
-		shot.y = spaceship.getY();
+		shot.x2 = spaceship.getX() + 40;
+		shot.y = spaceship.getY();;
 		shotList.add(shot); 
 	}
 	
