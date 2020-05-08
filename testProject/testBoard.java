@@ -3,6 +3,7 @@ package testProject;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,11 +21,12 @@ public class testBoard extends JPanel implements ActionListener {
 	private final int DELAY = 10;
 	private testSpaceShip spaceship;
 	private List<testAlien> alienList;
+	private List<testExplosion> explosionList;
+	private testExplosion explosion;
 	private testShot shot;
 	private List<testShot> shotList = new ArrayList<>();
 	private int killcount = 0;
 	private int score = 0;
-	private String explosionImg = "src/Images/Explosion.jpg";
 	private String message = "Game Over";
 	
 	public testBoard() {
@@ -69,7 +71,10 @@ public class testBoard extends JPanel implements ActionListener {
 		drawSpaceship(g);
 		drawAlien(g);
 		drawShot(g);
+		if (isHit() == true) {
+			drawExplosion(g);
 		}
+	}
 	
 	private void drawSpaceship(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
@@ -94,6 +99,37 @@ public class testBoard extends JPanel implements ActionListener {
 			g2d.drawImage(shot.ImgIcon, shot.x, shot.y, this);
 			g2d.drawImage(shot.ImgIcon, shot.x2, shot.y, this);
 			shot.y = shot.y - 2;
+		}
+	}
+	
+	private void drawExplosion(Graphics g) {
+		Graphics2D g2d = (Graphics2D) g;
+		for (testExplosion explosion : explosionList) {
+			g2d.drawImage(explosion.ImgIcon, explosion.getX(), explosion.getY(), this);
+		}
+	}
+	
+	public boolean isHit() {
+		if (shot.isVisible()) {
+			for (testAlien alien : alienList) {
+				if (shot.x == alien.randomX && shot.y == alien.y 
+				|| shot.x2 == alien.randomX && shot.y == alien.y) {
+					
+				}
+			}
+		}
+		return true;
+	}
+	
+	public void kill() {
+		if (isHit() == true) {
+			shot.die();
+			for (testAlien alien : alienList) {
+				alien.die();
+				Image ImgIcon = new ImageIcon("src/Images/Explosion").getImage();
+				killcount++;
+				score = score + 10;
+			}
 		}
 	}
 	
