@@ -74,9 +74,9 @@ public class testBoard extends JPanel implements ActionListener {
 		drawSpaceship(g);
 		drawAlien(g);
 		drawShot(g);
-		if (isHit() == true){
-			drawExplosion(g);
-		}
+//		if (isHit(shot) == true){
+//			drawExplosion(g);
+//		}
 	}
 	
 	private void drawSpaceship(Graphics g) {
@@ -99,6 +99,10 @@ public class testBoard extends JPanel implements ActionListener {
 			if (shot.y < 0) {
 				shotList.remove(shot);
 			}
+			if (isHit(shot)) {
+				shotList.remove(shot);
+				g2d.drawImage(explosion.ImgIcon, explosion.getX(), explosion.getY(), this);
+			}
 			g2d.drawImage(shot.ImgIcon, shot.x, shot.y, this);
 			g2d.drawImage(shot.ImgIcon, shot.x2, shot.y, this);
 			shot.y = shot.y - 2;
@@ -112,18 +116,19 @@ public class testBoard extends JPanel implements ActionListener {
 		}
 	}
 	
-	public boolean isHit() {
-		if (shot.isVisible()) {
-			for (testAlien alien : alienList) {
-				if (shot.x == alien.randomX && shot.y == alien.y || shot.x2 == alien.randomX && shot.y == alien.y) {
-					alien.die();
-					shot.die();
+	/**
+	 * Checks if an alien is hit.
+	 */
+	
+	public boolean isHit(testShot shot) {
+		for (testAlien alien : alienList) {
+			if (shot.x < alien.getX() + 3 && shot.x > alien.getX() - 3) {
+				if (shot.y < alien.getY() + 3 && shot.y > alien.getY() - 3) {
+					return true;
 				}
 			}
-		} else {
-			return false;
 		}
-		return true;
+		return false;
 	}
 
 	/**
