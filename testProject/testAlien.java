@@ -14,7 +14,7 @@ public class testAlien extends testSprite {
         loadImage(x, y);
     }
 	
-//	This method will set the coordinates and from here we'll the image used for the alien ship.
+//	This method will set the coordinates and from here we'll the image used for the alien.
     private void loadImage(int x, int y) {
     	this.x = x;
     	this.y = y;

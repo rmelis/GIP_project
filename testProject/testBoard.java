@@ -33,8 +33,11 @@ public class testBoard extends JPanel implements ActionListener {
 		initializeBoard();
 	}
 	
-//	In this method, we will recieve key events, set the background color, and set the focusable state of the board.
-//	We make a new spaceship, a new timer, and let it start.
+	/**
+	 * Create the aliens and add them to the list of aliens, create the player, 
+	 * create a list for the fired shots, create a timer and let it start.
+	 */
+	
 	private void initializeBoard() {
 		addKeyListener(new TAdapter());
 		setBackground(Color.black);
@@ -65,13 +68,13 @@ public class testBoard extends JPanel implements ActionListener {
 	}
 	
 	/**
-	 * Draw the spaceship of the player, the spaceships of the aliens, and the shots that are fired.
+	 * Draw the player, the aliens, and the shots that are fired.
 	 */
 	private void doDrawing(Graphics g) {
 		drawSpaceship(g);
 		drawAlien(g);
 		drawShot(g);
-		if (isHit() == true) {
+		if (isHit() == true){
 			drawExplosion(g);
 		}
 	}
@@ -112,27 +115,17 @@ public class testBoard extends JPanel implements ActionListener {
 	public boolean isHit() {
 		if (shot.isVisible()) {
 			for (testAlien alien : alienList) {
-				if (shot.x == alien.randomX && shot.y == alien.y 
-				|| shot.x2 == alien.randomX && shot.y == alien.y) {
-					
+				if (shot.x == alien.randomX && shot.y == alien.y || shot.x2 == alien.randomX && shot.y == alien.y) {
+					alien.die();
+					shot.die();
 				}
 			}
+		} else {
+			return false;
 		}
 		return true;
 	}
-	
-	public void kill() {
-		if (isHit() == true) {
-			shot.die();
-			for (testAlien alien : alienList) {
-				alien.die();
-				Image ImgIcon = new ImageIcon("src/Images/Explosion").getImage();
-				killcount++;
-				score = score + 10;
-			}
-		}
-	}
-	
+
 	/**
 	 * A shot is fired by the spaceship and added to the list of shots.
 	 */
