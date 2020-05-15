@@ -74,9 +74,6 @@ public class testBoard extends JPanel implements ActionListener {
 		drawSpaceship(g);
 		drawAlien(g);
 		drawShot(g);
-//		if (isHit(shot) == true){
-//			drawExplosion(g);
-//		}
 	}
 	
 	private void drawSpaceship(Graphics g) {
@@ -96,23 +93,18 @@ public class testBoard extends JPanel implements ActionListener {
 	private void drawShot(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		for (testShot shot : shotList) {
+			System.out.println("shot op positie: " + shot.x + " - " + shot.y);
 			if (shot.y < 0) {
 				shotList.remove(shot);
 			}
 			if (isHit(shot)) {
-				shotList.remove(shot);
-				g2d.drawImage(explosion.ImgIcon, explosion.getX(), explosion.getY(), this);
+				System.out.println("Explosion");
+//				remove shot from shotlist && show explosion on x & y coordinates
+				g2d.drawImage(new ImageIcon("src/Images/Explosion.jpg").getImage(), shot.x, shot.y, this);
 			}
 			g2d.drawImage(shot.ImgIcon, shot.x, shot.y, this);
 			g2d.drawImage(shot.ImgIcon, shot.x2, shot.y, this);
 			shot.y = shot.y - 2;
-		}
-	}
-	
-	private void drawExplosion(Graphics g) {
-		Graphics2D g2d = (Graphics2D) g;
-		for (testExplosion explosion : explosionList) {
-			g2d.drawImage(explosion.ImgIcon, explosion.getX(), explosion.getY(), this);
 		}
 	}
 	
@@ -122,8 +114,11 @@ public class testBoard extends JPanel implements ActionListener {
 	
 	public boolean isHit(testShot shot) {
 		for (testAlien alien : alienList) {
-			if (shot.x < alien.getX() + 3 && shot.x > alien.getX() - 3) {
-				if (shot.y < alien.getY() + 3 && shot.y > alien.getY() - 3) {
+			if (shot.x < alien.getX() + 30 && shot.x > alien.getX() - 30) {
+//				x-axis
+				if (shot.y < alien.getY() + 30 && shot.y > alien.getY() - 30) {
+//					hit detected
+					System.out.println("Hit detected");
 					return true;
 				}
 			}
