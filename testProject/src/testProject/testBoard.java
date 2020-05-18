@@ -3,6 +3,7 @@ package testProject;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,7 +11,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -21,19 +21,23 @@ public class testBoard extends JPanel implements ActionListener {
 	private final int DELAY = 10;
 	private testSpaceShip spaceship;
 	private List<testAlien> alienList;
+	private List<testExplosion> explosionList;
+	private testExplosion explosion;
+	private testShot shot;
 	private List<testShot> shotList = new ArrayList<>();
 	private int killcount = 0;
-	private String explosionImg = "src/Images/Explosion.jpg";
+	private int score = 0;
+	private String message = "Game Over";
 	
-//	Here we will set the size of the Board,
-//	and call the method "initializeBoard()".
 	public testBoard() {
-		setSize(1000, 1000);
 		initializeBoard();
 	}
 	
-//	In this method, we will recieve key events, set the background color, and set the focusable state of the board.
-//	We make a new spaceship, a new timer, and let it start.
+	/**
+	 * Create the aliens and add them to the list of aliens, create the player, 
+	 * create a list for the fired shots, create a timer and let it start.
+	 */
+	
 	private void initializeBoard() {
 		addKeyListener(new TAdapter());
 		setBackground(Color.black);
@@ -41,10 +45,10 @@ public class testBoard extends JPanel implements ActionListener {
 		
 		alienList = new ArrayList<>();
 		
-		for (int i = 0; i < 1; i++) {
-			for (int j = 0; j < 1; j++) {
-				testAlien alien = new testAlien(100 * j,
-						1 + 100 * i);
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 5; j++) {
+				testAlien alien = new testAlien(100 * i, -100 * i);
+				alien.setRandomX();
 				alienList.add(alien);
 			}
 		}
@@ -63,48 +67,96 @@ public class testBoard extends JPanel implements ActionListener {
 		Toolkit.getDefaultToolkit().sync();
 	}
 	
-//	This method will make sure the spaceship and shots are visible on the screen.
+	/**
+	 * Draw the player, the aliens, and the shots that are fired.
+	 */
 	private void doDrawing(Graphics g) {
+		drawSpaceship(g);
+		drawAlien(g);
+		drawShot(g);
+	}
+	
+	private void drawSpaceship(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.drawImage(spaceship.getImage(), spaceship.getX(), spaceship.getY(), this);
-		
+	}
+	
+	private void drawAlien(Graphics g) {
+		Graphics2D g2d = (Graphics2D) g;
+		for (testAlien alien : alienList) {
+			System.out.println("alien op positie: " + alien.randomX + " - " + alien.y);
+			g2d.drawImage(alien.getImage(), alien.randomX, alien.y, this);
+			alien.y++;
+		}
+	}
+	
+	private void drawShot(Graphics g) {
+		Graphics2D g2d = (Graphics2D) g;
 		for (testShot shot : shotList) {
+			System.out.println("shot op positie: " + shot.x + " - " + shot.y);
 			if (shot.y < 0) {
 				shotList.remove(shot);
 			}
+			if (isHit(shot)) {
+				System.out.println("Explosion");
+//				remove shot from shotlist && show explosion on x & y coordinates
+				g2d.drawImage(new ImageIcon("src/Images/Explosion.jpg").getImage(), shot.x, shot.y, this);
+			}
 			g2d.drawImage(shot.ImgIcon, shot.x, shot.y, this);
-			shot.y--;
-		}
-		
-		for (testAlien alien : alienList) {
-			g2d.drawImage(alien.getImage(), alien.getRandomX(), alien.y, this);
-//			alien.x = alien.getRandomX();
-            alien.y++;
+			g2d.drawImage(shot.ImgIcon, shot.x2, shot.y, this);
+			shot.y = shot.y - 2;
 		}
 	}
 	
-//	In this method, a shothot is fired by the spaceship and added to the list of shots.
+	/**
+	 * Checks if an alien is hit.
+	 */
+	
+	public boolean isHit(testShot shot) {
+		for (testAlien alien : alienList) {
+			if (shot.x < alien.randomX + 30 && shot.x > alien.randomX - 30) {
+//				x-axis
+				if (shot.y < alien.y + 30 && shot.y > alien.y - 30) {
+//					hit detected
+					System.out.println("Hit detected");
+					alienList.remove(alien);
+					shotList.remove(shot);
+					killcount++;
+					score = score + 10;
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * A shot is fired by the spaceship and added to the list of shots.
+	 */
 	private void fire() {
 		testShot shot = new testShot();
 		shot.x = spaceship.getX();
-		shot.y = spaceship.getY();
+		shot.x2 = spaceship.getX() + 40;
+		shot.y = spaceship.getY();;
 		shotList.add(shot); 
 	}
 	
-//	This method will call the "step()" function.
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		step();
 	}
 	
-//	Here the function "move()" is called.
-//	The background will show no trace of a spaceship moving around.
+	/**
+	 * When the player moves, the background will cover up the trace of the spaceship.
+	*/
 	private void step() {
 		spaceship.move();
 		repaint();
 	}
 	
-//	If the spacebar is released, the spaceship will fire a bomb.
+/**
+ * The player presses the spacebar, a shot will be fired when the player releases the spacebar.
+*/
 	private class TAdapter extends KeyAdapter {
 		@Override
 		public void keyReleased(KeyEvent e) {

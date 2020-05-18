@@ -15,13 +15,14 @@ public class testSpaceShip {
     private int height;
     private Image image;
     
-//    Here we call the method that will load the image of the spaceship.
     public testSpaceShip() {
 
         loadImage();
     }
     
-//    From here we'll get the image used for the player's spaceship.
+    /**
+     * The image that will be used to show the player's spaceship.
+     */
     private void loadImage() {
         
         ImageIcon ImgIcon = new ImageIcon("src/Images/X-wing.png");
@@ -61,21 +62,25 @@ public class testSpaceShip {
         return image;
     }
     
-//    The player can move left & right by using left and right keys.
+    /**
+     * Move left and right by using the left and right arrow keys.
+     */
     public void keyPressed(KeyEvent e) {
 
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_LEFT) {
-            dx = -2;
+            dx = -3;
         }
 
         if (key == KeyEvent.VK_RIGHT) {
-            dx = 2;
+            dx = 3;
         }
     }
     
-//    The player will stop moving if that key is released.
+    /**
+     * When the arrow key is released, the player will stop moving.
+     */
     public void keyReleased(KeyEvent e) {
         
         int key = e.getKeyCode();
