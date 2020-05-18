@@ -45,7 +45,7 @@ public class testBoard extends JPanel implements ActionListener {
 		
 		alienList = new ArrayList<>();
 		
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < 5; j++) {
 				testAlien alien = new testAlien(100 * i, -100 * i);
 				alien.setRandomX();
@@ -114,18 +114,22 @@ public class testBoard extends JPanel implements ActionListener {
 	
 	public boolean isHit(testShot shot) {
 		for (testAlien alien : alienList) {
-			if (shot.x < alien.getX() + 30 && shot.x > alien.getX() - 30) {
+			if (shot.x < alien.randomX + 30 && shot.x > alien.randomX - 30) {
 //				x-axis
-				if (shot.y < alien.getY() + 30 && shot.y > alien.getY() - 30) {
+				if (shot.y < alien.y + 30 && shot.y > alien.y - 30) {
 //					hit detected
 					System.out.println("Hit detected");
+					alienList.remove(alien);
+					shotList.remove(shot);
+					killcount++;
+					score = score + 10;
 					return true;
 				}
 			}
 		}
 		return false;
 	}
-
+	
 	/**
 	 * A shot is fired by the spaceship and added to the list of shots.
 	 */

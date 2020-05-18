@@ -8,7 +8,6 @@ public class testAlien extends testSprite {
 	public int x;
 	public int y;
 	
-//  Here we call the method that will load the image of the alien ship.
 	public testAlien(int x, int y) {
 
         loadImage(x, y);
