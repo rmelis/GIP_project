@@ -3,7 +3,6 @@ package testProject;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -92,20 +91,21 @@ public class testBoard extends JPanel implements ActionListener {
 	
 	private void drawShot(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
+		List<testShot> shotToRemove = new ArrayList<testShot>();
 		for (testShot shot : shotList) {
 			System.out.println("shot op positie: " + shot.x + " - " + shot.y);
 			if (shot.y < 0) {
-				shotList.remove(shot);
+				shotToRemove.add(shot);
 			}
 			if (isHit(shot)) {
 				System.out.println("Explosion");
-//				remove shot from shotlist && show explosion on x & y coordinates
 				g2d.drawImage(new ImageIcon("src/Images/Explosion.jpg").getImage(), shot.x, shot.y, this);
 			}
 			g2d.drawImage(shot.ImgIcon, shot.x, shot.y, this);
 			g2d.drawImage(shot.ImgIcon, shot.x2, shot.y, this);
 			shot.y = shot.y - 2;
 		}
+		shotList.removeAll(shotToRemove);
 	}
 	
 	/**

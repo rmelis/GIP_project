@@ -22,14 +22,10 @@ public class testGame extends JFrame {
 		setLocationRelativeTo(null);
 	}
 	
-	/**
-	 * Start of the game.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(() -> {
-			
-			testGame testgame = new testGame();
-			testgame.setVisible(true);
-		});
+			testGame Game = new testGame();
+			Game.setVisible(true);
+    	});
 	}
 }
