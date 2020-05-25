@@ -18,7 +18,7 @@ import javax.swing.Timer;
 
 public class testBoard extends JPanel implements ActionListener {
 	private Timer timer;
-	private final int DELAY = 10;
+	private final int DELAY = 41;
 	private testSpaceShip spaceship;
 	private List<testAlien> alienList;
 	private List<testExplosion> explosionList =  new ArrayList<testExplosion>();
@@ -57,7 +57,35 @@ public class testBoard extends JPanel implements ActionListener {
 		shotList = new ArrayList<>();
 		
 		timer = new Timer(DELAY, this);
+		timer.addActionListener(createMovementActionListener());
 		timer.start();
+	}
+
+	private ActionListener createMovementActionListener() {
+		return new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				for (testAlien alien : alienList) {
+					alien.y++;
+				}
+				List<testShot> shotToRemove = new ArrayList<testShot>();
+				for (testShot shot : shotList) {
+//					System.out.println("shot op positie: " + shot.x + " - " + shot.y);
+					if (shot.y < 0) {
+						shotToRemove.add(shot);
+					}
+					if (isHit(shot)) {
+						System.out.println("Explosion");
+						shotToRemove.add(shot);
+//						remove shot from shotlist && show explosion on x & y coordinates
+						explosionList.add(new testExplosion(shot.x, shot.y));
+					}
+					shot.y = shot.y - 2;
+				}
+				shotList.removeAll(shotToRemove);
+			}
+		};
 	}
 
 	@Override
@@ -74,19 +102,24 @@ public class testBoard extends JPanel implements ActionListener {
 		drawSpaceship(g);
 		drawAlien(g);
 		drawShot(g);
+		drawExplosion(g);
 	}
 	
+	private void drawExplosion(Graphics g) {
+		for (testExplosion expl :explosionList) {
+			g.drawImage(expl.ImgIcon, expl.x, expl.y, this);
+		}
+	}
+
 	private void drawSpaceship(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.drawImage(spaceship.getImage(), spaceship.getX(), spaceship.getY(), this);
+		g2d.drawImage(spaceship.getImage(), spaceship.getX(), spaceship.getY(),45,45, this);
 	}
 	
 	private void drawAlien(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		for (testAlien alien : alienList) {
-//			System.out.println("alien op positie: " + alien.randomX + " - " + alien.y);
 			g2d.drawImage(alien.getImage(), alien.randomX, alien.y, this);
-			alien.y++;
 		}
 	}
 	
@@ -94,23 +127,8 @@ public class testBoard extends JPanel implements ActionListener {
 		Graphics2D g2d = (Graphics2D) g;
 		List<testShot> shotToRemove = new ArrayList<testShot>();
 		for (testShot shot : shotList) {
-//			System.out.println("shot op positie: " + shot.x + " - " + shot.y);
-			if (shot.y < 0) {
-				shotToRemove.add(shot);
-			}
-			if (isHit(shot)) {
-				System.out.println("Explosion");
-				shotToRemove.add(shot);
-//				remove shot from shotlist && show explosion on x & y coordinates
-				explosionList.add(new testExplosion(shot.x, shot.y));
-			}
-			for (testExplosion expl :explosionList) {
-				System.out.println("draw explosion");
-				g.drawImage(expl.ImgIcon, expl.x, expl.y, this);
-			}
 			g2d.drawImage(shot.ImgIcon, shot.x, shot.y, this);
 			g2d.drawImage(shot.ImgIcon, shot.x2, shot.y, this);
-			shot.y = shot.y - 2;
 		}
 		shotList.removeAll(shotToRemove);
 	}

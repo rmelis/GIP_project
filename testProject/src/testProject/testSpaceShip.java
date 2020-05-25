@@ -25,9 +25,8 @@ public class testSpaceShip {
      */
     private void loadImage() {
         
-        ImageIcon ImgIcon = new ImageIcon("src/Images/X-wing.png");
+        ImageIcon ImgIcon = new ImageIcon("src/Images/spaceship2.png");
         image = ImgIcon.getImage();
-        
         width = image.getWidth(null);
         height = image.getHeight(null);
     }
