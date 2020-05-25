@@ -103,7 +103,6 @@ public class testBoard extends JPanel implements ActionListener {
 				shotToRemove.add(shot);
 //				remove shot from shotlist && show explosion on x & y coordinates
 				explosionList.add(new testExplosion(shot.x, shot.y));
-//				showExplosion(g, shot.x, shot.y);
 			}
 			for (testExplosion expl :explosionList) {
 				System.out.println("draw explosion");
