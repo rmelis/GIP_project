@@ -17,7 +17,7 @@ public class testAlien extends testSprite {
     private void loadImage(int x, int y) {
     	this.x = x;
     	this.y = y;
-    	ImageIcon ImgIcon = new ImageIcon("src/Images/Tie fighter.png");
+    	ImageIcon ImgIcon = new ImageIcon("src/Images/tiefighterbig.png");
         image = ImgIcon.getImage();
     }
 }

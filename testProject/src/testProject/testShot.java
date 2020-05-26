@@ -9,5 +9,5 @@ public class testShot extends testSprite {
 	public int x;
 	public int x2;
 	public int y;
-	Image ImgIcon = new ImageIcon("src/Images/shot.png").getImage();
+	Image ImgIcon = new ImageIcon("src/Images/shot2.png").getImage();
 }

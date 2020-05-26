@@ -6,7 +6,8 @@ import javax.swing.ImageIcon;
 public class testExplosion extends testSprite {
 	public int x;
 	public int y;
-    Image ImgIcon = new ImageIcon("src/Images/1211112.gif").getImage();
+	public int countToRemoveFromDisplay = 50;
+    Image ImgIcon = new ImageIcon("src/Images/explosion.gif").getImage();
     
     public testExplosion(int x, int y) {
     	this.x = x;

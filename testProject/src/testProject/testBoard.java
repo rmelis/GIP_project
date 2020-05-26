@@ -18,17 +18,19 @@ import javax.swing.Timer;
 
 public class testBoard extends JPanel implements ActionListener {
 	private Timer timer;
-	private final int DELAY = 41;
+	private final int DELAY = 10;
 	private testSpaceShip spaceship;
 	private List<testAlien> alienList;
 	private List<testExplosion> explosionList =  new ArrayList<testExplosion>();
+	private List<testExplosion> explosionsToRemove =  new ArrayList<testExplosion>();
+	List<testShot> shotToRemove = new ArrayList<testShot>();
 	private testExplosion explosion;
-	private testShot shot;
+//	private testShot shot;
 	private List<testShot> shotList = new ArrayList<>();
 	private int killcount = 0;
 	private int score = 0;
 	private String message = "Game Over";
-	
+		
 	public testBoard() {
 		initializeBoard();
 	}
@@ -54,7 +56,6 @@ public class testBoard extends JPanel implements ActionListener {
 		}
 		
 		spaceship = new testSpaceShip();
-		shotList = new ArrayList<>();
 		
 		timer = new Timer(DELAY, this);
 		timer.addActionListener(createMovementActionListener());
@@ -66,24 +67,36 @@ public class testBoard extends JPanel implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				List<testAlien> aliensToRemove = new ArrayList<testAlien>();
 				for (testAlien alien : alienList) {
 					alien.y++;
+					if (isHit(alien)) {
+						System.out.println("Explosion");
+						aliensToRemove.add(alien);
+//						remove shot from shotlist && show explosion on x & y coordinates
+						explosionList.add(new testExplosion(alien.randomX, alien.y));
+					}
 				}
-				List<testShot> shotToRemove = new ArrayList<testShot>();
 				for (testShot shot : shotList) {
 //					System.out.println("shot op positie: " + shot.x + " - " + shot.y);
 					if (shot.y < 0) {
 						shotToRemove.add(shot);
 					}
-					if (isHit(shot)) {
-						System.out.println("Explosion");
-						shotToRemove.add(shot);
-//						remove shot from shotlist && show explosion on x & y coordinates
-						explosionList.add(new testExplosion(shot.x, shot.y));
-					}
-					shot.y = shot.y - 2;
+					shot.y = shot.y - 4;
 				}
+				
+				for (testExplosion explosion : explosionList) {
+					explosion.countToRemoveFromDisplay--;
+					if (explosion.countToRemoveFromDisplay <= 0) {
+						explosionsToRemove.add(explosion);
+					}
+				}
+				alienList.removeAll(aliensToRemove);
+				explosionList.removeAll(explosionsToRemove);
+				explosionsToRemove.clear();
 				shotList.removeAll(shotToRemove);
+				shotToRemove.clear();
 			}
 		};
 	}
@@ -91,6 +104,7 @@ public class testBoard extends JPanel implements ActionListener {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		g.drawImage(new ImageIcon("src/Images/space-background.jpg").getImage(), 0,0, 1000, 1000,null);
 		doDrawing(g);
 		Toolkit.getDefaultToolkit().sync();
 	}
@@ -107,44 +121,55 @@ public class testBoard extends JPanel implements ActionListener {
 	
 	private void drawExplosion(Graphics g) {
 		for (testExplosion expl :explosionList) {
-			g.drawImage(expl.ImgIcon, expl.x, expl.y, this);
+			g.drawImage(expl.ImgIcon, expl.x - 35, expl.y - 40, 120, 120, this);
 		}
 	}
 
 	private void drawSpaceship(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.drawImage(spaceship.getImage(), spaceship.getX(), spaceship.getY(),45,45, this);
+		g2d.drawImage(spaceship.getImage(), spaceship.getX(), spaceship.getY(),60,70, this);
 	}
 	
 	private void drawAlien(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		for (testAlien alien : alienList) {
-			g2d.drawImage(alien.getImage(), alien.randomX, alien.y, this);
+			g2d.drawImage(alien.getImage(), alien.randomX, alien.y, 45, 28, this);
 		}
 	}
 	
 	private void drawShot(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
-		List<testShot> shotToRemove = new ArrayList<testShot>();
 		for (testShot shot : shotList) {
-			g2d.drawImage(shot.ImgIcon, shot.x, shot.y, this);
-			g2d.drawImage(shot.ImgIcon, shot.x2, shot.y, this);
+			g2d.drawImage(shot.ImgIcon, shot.x, shot.y, 5, 15, this);
+			g2d.drawImage(shot.ImgIcon, shot.x2, shot.y, 5, 15, this);
 		}
-		shotList.removeAll(shotToRemove);
 	}
 
 	/**
 	 * Checks if an alien is hit.
 	 */
 	
-	public boolean isHit(testShot shot) {
-		for (testAlien alien : alienList) {
+	public boolean isHit(testAlien alien) {
+		for (testShot shot : shotList) {
+			//left cannon
 			if (shot.x < alien.randomX + 30 && shot.x > alien.randomX - 30) {
 //				x-axis
 				if (shot.y < alien.y + 30 && shot.y > alien.y - 30) {
 //					hit detected
 					System.out.println("Hit detected");
-					alienList.remove(alien);
+					shotToRemove.add(shot);
+					killcount++;
+					score = score + 10;
+					return true;
+				}
+			}
+			//right cannon
+			if (shot.x2 < alien.randomX + 30 && shot.x2 > alien.randomX - 30) {
+//				x-axis
+				if (shot.y < alien.y + 30 && shot.y > alien.y - 30) {
+//					hit detected
+					System.out.println("Hit detected");
+					shotToRemove.add(shot);
 					killcount++;
 					score = score + 10;
 					return true;
@@ -159,8 +184,8 @@ public class testBoard extends JPanel implements ActionListener {
 	 */
 	private void fire() {
 		testShot shot = new testShot();
-		shot.x = spaceship.getX();
-		shot.x2 = spaceship.getX() + 40;
+		shot.x = spaceship.getX() + 5;
+		shot.x2 = spaceship.getX() + 50;
 		shot.y = spaceship.getY();;
 		shotList.add(shot); 
 	}
