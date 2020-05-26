@@ -121,7 +121,7 @@ public class testBoard extends JPanel implements ActionListener {
 	
 	private void drawExplosion(Graphics g) {
 		for (testExplosion expl :explosionList) {
-			g.drawImage(expl.ImgIcon, expl.x - 35, expl.y - 40, 120, 120, this);
+			g.drawImage(expl.getImage(), expl.x - 35, expl.y - 40, 120, 120, this);
 		}
 	}
 
