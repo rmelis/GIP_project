@@ -1,9 +1,12 @@
 package testProject;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -105,6 +108,11 @@ public class testBoard extends JPanel implements ActionListener {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.drawImage(new ImageIcon("src/Images/space-background.jpg").getImage(), 0,0, 1000, 1000,null);
+	
+//		Font f = g.getFont();
+//	    g.setFont(new Font(f.getName(), Font.BOLD, 24));
+//	    g.setColor(Color.CYAN);
+//		g.drawString("Kills: " + killcount, 450, 20);
 		doDrawing(g);
 		Toolkit.getDefaultToolkit().sync();
 	}
