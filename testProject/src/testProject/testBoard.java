@@ -17,7 +17,10 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.Timer;
+
+import org.omg.CORBA.portable.ApplicationException;
 
 public class testBoard extends JPanel implements ActionListener {
 	private Timer timer;
@@ -31,6 +34,7 @@ public class testBoard extends JPanel implements ActionListener {
 //	private testShot shot;
 	private List<testShot> shotList = new ArrayList<>();
 	private int killcount = 0;
+	private int escapedAliencount = 0;
 	private int score = 0;
 	private String message = "Game Over";
 		
@@ -50,8 +54,8 @@ public class testBoard extends JPanel implements ActionListener {
 		
 		alienList = new ArrayList<>();
 		
-		for (int i = 0; i < 2; i++) {
-			for (int j = 0; j < 5; j++) {
+		for (int i = 0; i < 20; i++) {
+			for (int j = 0; j < 1; j++) {
 				testAlien alien = new testAlien(100 * i, -100 * i);
 				alien.setRandomX();
 				alienList.add(alien);
@@ -74,6 +78,11 @@ public class testBoard extends JPanel implements ActionListener {
 				List<testAlien> aliensToRemove = new ArrayList<testAlien>();
 				for (testAlien alien : alienList) {
 					alien.y++;
+					if (alien.y == 1000) {
+//						alien hit the bottom
+						escapedAliencount++;
+						aliensToRemove.add(alien);
+					}
 					if (isHit(alien)) {
 						System.out.println("Explosion");
 						aliensToRemove.add(alien);
@@ -109,10 +118,11 @@ public class testBoard extends JPanel implements ActionListener {
 		super.paintComponent(g);
 		g.drawImage(new ImageIcon("src/Images/space-background.jpg").getImage(), 0,0, 1000, 1000,null);
 	
-//		Font f = g.getFont();
-//	    g.setFont(new Font(f.getName(), Font.BOLD, 24));
-//	    g.setColor(Color.CYAN);
-//		g.drawString("Kills: " + killcount, 450, 20);
+		Font f = g.getFont();
+	    g.setFont(new Font(f.getName(), Font.BOLD, 24));
+	    g.setColor(Color.CYAN);
+		g.drawString("Kills: " + killcount, 450, 20);
+		g.drawString("Escaped aliens: " + escapedAliencount, 700, 20);
 		doDrawing(g);
 		Toolkit.getDefaultToolkit().sync();
 	}
@@ -194,7 +204,7 @@ public class testBoard extends JPanel implements ActionListener {
 		testShot shot = new testShot();
 		shot.x = spaceship.getX() + 5;
 		shot.x2 = spaceship.getX() + 50;
-		shot.y = spaceship.getY();;
+		shot.y = spaceship.getY();
 		shotList.add(shot); 
 	}
 	

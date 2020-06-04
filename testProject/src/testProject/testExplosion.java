@@ -9,8 +9,7 @@ public class testExplosion extends testSprite {
 	public int y;
 	public int countToRemoveFromDisplay = 50;
 	Random random = new Random();
-    ImageIcon[] iconarray = {new ImageIcon("src/Images/explosion.gif"), new ImageIcon("src/Images/explosion2.gif"), new ImageIcon("src/Images/1211112.gif")};
-    
+    ImageIcon[] iconarray = {new ImageIcon("src/Images/explosion.gif"), new ImageIcon("src/Images/explosion2.gif"), new ImageIcon("src/Images/Explosion3.gif")};
     public testExplosion(int x, int y) {
     	this.x = x;
     	this.y = y;
