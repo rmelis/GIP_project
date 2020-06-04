@@ -20,7 +20,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.Timer;
 
-import org.omg.CORBA.portable.ApplicationException;
 
 public class testBoard extends JPanel implements ActionListener {
 	private Timer timer;
@@ -139,7 +138,11 @@ public class testBoard extends JPanel implements ActionListener {
 	
 	private void drawExplosion(Graphics g) {
 		for (testExplosion expl :explosionList) {
-			g.drawImage(expl.getImage(), expl.x - 35, expl.y - 40, 120, 120, this);
+			if (expl.big) {
+				g.drawImage(expl.getImage(), expl.x - 35, expl.y - 40, 220, 220, this);				
+			} else {
+				g.drawImage(expl.getImage(), expl.x - 35, expl.y - 40, 120, 120, this);	
+			}
 		}
 	}
 
