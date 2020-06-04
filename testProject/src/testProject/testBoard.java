@@ -53,13 +53,13 @@ public class testBoard extends JPanel implements ActionListener {
 		
 		alienList = new ArrayList<>();
 		
-		for (int i = 0; i < 20; i++) {
-			for (int j = 0; j < 1; j++) {
-				testAlien alien = new testAlien(100 * i, -100 * i);
-				alien.setRandomX();
-				alienList.add(alien);
-			}
-		}
+//		for (int i = 0; i < 20; i++) {
+//			for (int j = 0; j < 1; j++) {
+//				testAlien alien = new testAlien(100 * i, -100 * i);
+//				alien.setRandomX();
+//				alienList.add(alien);
+//			}
+//		}
 		
 		spaceship = new testSpaceShip();
 		
@@ -73,6 +73,11 @@ public class testBoard extends JPanel implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				//add alien
+				testAlien alientoadd = new testAlien(0,0);
+				alientoadd.setRandomX();
+				alienList.add(alientoadd);
 				
 				List<testAlien> aliensToRemove = new ArrayList<testAlien>();
 				for (testAlien alien : alienList) {
