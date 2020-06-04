@@ -23,6 +23,7 @@ import javax.swing.Timer;
 
 public class testBoard extends JPanel implements ActionListener {
 	private Timer timer;
+	public int MOEILIJKHEIDSFACTOR = 50;
 	private final int DELAY = 10;
 	private testSpaceShip spaceship;
 	private List<testAlien> alienList;
@@ -71,13 +72,18 @@ public class testBoard extends JPanel implements ActionListener {
 	private ActionListener createMovementActionListener() {
 		return new ActionListener() {
 			
+			int counter = 0;
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				counter++;
 				//add alien
-				testAlien alientoadd = new testAlien(0,0);
-				alientoadd.setRandomX();
-				alienList.add(alientoadd);
+				if (counter > MOEILIJKHEIDSFACTOR) {
+					testAlien alientoadd = new testAlien(0,0);
+					alientoadd.setRandomX();
+					alienList.add(alientoadd);
+					counter = 0;
+				}
 				
 				List<testAlien> aliensToRemove = new ArrayList<testAlien>();
 				for (testAlien alien : alienList) {
