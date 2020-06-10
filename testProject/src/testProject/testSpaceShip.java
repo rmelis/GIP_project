@@ -69,14 +69,10 @@ public class testSpaceShip {
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_LEFT) {
-//        	ImageIcon ImgIcon = new ImageIcon("src/Images/TurnLeft1.png");
-//            image = ImgIcon.getImage();
             dx = -3;
         }
 
         if (key == KeyEvent.VK_RIGHT) {
-//        	ImageIcon ImgIcon = new ImageIcon("src/Images/TurnRight1.png");
-//            image = ImgIcon.getImage();
             dx = 3;
         }
     }
@@ -89,14 +85,10 @@ public class testSpaceShip {
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_LEFT) {
-        	ImageIcon ImgIcon = new ImageIcon("src/Images/testTransparent.png");
-            image = ImgIcon.getImage();
             dx = 0;
         }
 
         if (key == KeyEvent.VK_RIGHT) {
-        	ImageIcon ImgIcon = new ImageIcon("src/Images/testTransparent.png");
-            image = ImgIcon.getImage();
             dx = 0;
         }
     }

@@ -1,6 +1,7 @@
 package testProject;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -16,37 +17,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JTextField;
 import javax.swing.Timer;
 
-
 public class testBoard extends JPanel implements ActionListener {
+	static boolean GAME_END = false;
 	private Timer timer;
 	public int MOEILIJKHEIDSFACTOR = 50;
 	private final int DELAY = 10;
 	private testSpaceShip spaceship;
 	private List<testAlien> alienList;
-	private List<testExplosion> explosionList =  new ArrayList<testExplosion>();
-	private List<testExplosion> explosionsToRemove =  new ArrayList<testExplosion>();
+	private List<testExplosion> explosionList = new ArrayList<testExplosion>();
+	private List<testExplosion> explosionsToRemove = new ArrayList<testExplosion>();
 	List<testShot> shotToRemove = new ArrayList<testShot>();
 	private testExplosion explosion;
-//	private testShot shot;
 	private List<testShot> shotList = new ArrayList<>();
 	private int killcount = 0;
 	private int escapedAliencount = 0;
-	private int score = 0;
-	private String message = "Game Over";
-		
+	private String name;
+	
 	public testBoard() {
 		initializeBoard();
 	}
 	
 	/**
-	 * Create the aliens and add them to the list of aliens, create the player, 
+	 * Create the aliens and add them to the list of aliens, create the player,
 	 * create a list for the fired shots, create a timer and let it start.
 	 */
-	
 	private void initializeBoard() {
 		addKeyListener(new TAdapter());
 		setBackground(Color.black);
@@ -68,7 +70,7 @@ public class testBoard extends JPanel implements ActionListener {
 		timer.addActionListener(createMovementActionListener());
 		timer.start();
 	}
-
+	
 	private ActionListener createMovementActionListener() {
 		return new ActionListener() {
 			
@@ -76,8 +78,11 @@ public class testBoard extends JPanel implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (GAME_END) {
+					return;
+				}
 				counter++;
-				//add alien
+//				add alien
 				if (counter > MOEILIJKHEIDSFACTOR) {
 					testAlien alientoadd = new testAlien(0,0);
 					alientoadd.setRandomX();
@@ -100,6 +105,7 @@ public class testBoard extends JPanel implements ActionListener {
 						explosionList.add(new testExplosion(alien.randomX, alien.y));
 					}
 				}
+				
 				for (testShot shot : shotList) {
 //					System.out.println("shot op positie: " + shot.x + " - " + shot.y);
 					if (shot.y < 0) {
@@ -122,15 +128,15 @@ public class testBoard extends JPanel implements ActionListener {
 			}
 		};
 	}
-
+	
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.drawImage(new ImageIcon("src/Images/space-background.jpg").getImage(), 0,0, 1000, 1000,null);
-	
+		
 		Font f = g.getFont();
-	    g.setFont(new Font(f.getName(), Font.BOLD, 24));
-	    g.setColor(Color.CYAN);
+		g.setFont(new Font(f.getName(), Font.BOLD, 24));
+		g.setColor(Color.CYAN);
 		g.drawString("Kills: " + killcount, 450, 20);
 		g.drawString("Escaped aliens: " + escapedAliencount, 700, 20);
 		doDrawing(g);
@@ -148,15 +154,15 @@ public class testBoard extends JPanel implements ActionListener {
 	}
 	
 	private void drawExplosion(Graphics g) {
-		for (testExplosion expl :explosionList) {
+		for (testExplosion expl : explosionList) {
 			if (expl.big) {
-				g.drawImage(expl.getImage(), expl.x - 35, expl.y - 40, 220, 220, this);				
+				g.drawImage(expl.getImage(), expl.x - 35, expl.y - 40, 220, 220, this);
 			} else {
-				g.drawImage(expl.getImage(), expl.x - 35, expl.y - 40, 120, 120, this);	
+				g.drawImage(expl.getImage(), expl.x - 35, expl.y - 40, 120, 120, this);
 			}
 		}
 	}
-
+	
 	private void drawSpaceship(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.drawImage(spaceship.getImage(), spaceship.getX(), spaceship.getY(),60,70, this);
@@ -176,14 +182,13 @@ public class testBoard extends JPanel implements ActionListener {
 			g2d.drawImage(shot.ImgIcon, shot.x2, shot.y, 5, 15, this);
 		}
 	}
-
+	
 	/**
 	 * Checks if an alien is hit.
 	 */
-	
 	public boolean isHit(testAlien alien) {
 		for (testShot shot : shotList) {
-			//left cannon
+//			left cannon
 			if (shot.x < alien.randomX + 30 && shot.x > alien.randomX - 30) {
 //				x-axis
 				if (shot.y < alien.y + 30 && shot.y > alien.y - 30) {
@@ -191,11 +196,10 @@ public class testBoard extends JPanel implements ActionListener {
 					System.out.println("Hit detected");
 					shotToRemove.add(shot);
 					killcount++;
-					score = score + 10;
 					return true;
 				}
 			}
-			//right cannon
+//			right cannon
 			if (shot.x2 < alien.randomX + 30 && shot.x2 > alien.randomX - 30) {
 //				x-axis
 				if (shot.y < alien.y + 30 && shot.y > alien.y - 30) {
@@ -203,7 +207,6 @@ public class testBoard extends JPanel implements ActionListener {
 					System.out.println("Hit detected");
 					shotToRemove.add(shot);
 					killcount++;
-					score = score + 10;
 					return true;
 				}
 			}
@@ -219,7 +222,7 @@ public class testBoard extends JPanel implements ActionListener {
 		shot.x = spaceship.getX() + 5;
 		shot.x2 = spaceship.getX() + 50;
 		shot.y = spaceship.getY();
-		shotList.add(shot); 
+		shotList.add(shot);
 	}
 	
 	@Override
@@ -229,21 +232,51 @@ public class testBoard extends JPanel implements ActionListener {
 	
 	/**
 	 * When the player moves, the background will cover up the trace of the spaceship.
-	*/
+	 */
 	private void step() {
 		spaceship.move();
 		repaint();
 	}
 	
-/**
- * The player presses the spacebar, a shot will be fired when the player releases the spacebar.
-*/
+	/**
+	 * The player presses the spacebar, a shot will be fired when the player releases the spacebar.
+	 */
 	private class TAdapter extends KeyAdapter {
 		@Override
 		public void keyReleased(KeyEvent e) {
 			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-	        	fire();
-	        }
+				fire();
+				}
+			if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				GAME_END = true;
+				JFrame dialog = new JFrame();
+				dialog.setSize(400, 400);
+				dialog.setResizable(false);
+				dialog.setLocationRelativeTo(null);
+				
+				JPanel panel = new JPanel();
+				dialog.add(panel);
+				
+				JLabel label = new JLabel("Geef een naam in.");
+				JTextField textfield = new JTextField();
+				textfield.setPreferredSize(new Dimension(100, 50));
+				name = textfield.getText();
+				JButton button = new JButton("OK");
+				
+				panel.add(label);
+				panel.add(textfield);
+				panel.add(button);
+				
+				button.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						
+					}
+				});
+
+				dialog.setVisible(true);
+			}
 			spaceship.keyReleased(e);
 		}
 		
