@@ -19,7 +19,7 @@ public class testExplosion extends testSprite {
     	image = iconarray[nextInt].getImage();
     	if (nextInt == 2) {
     		countToRemoveFromDisplay = 30;
-    		big= true;
+    		big = true;
     	}
     }
     

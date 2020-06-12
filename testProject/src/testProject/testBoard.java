@@ -2,6 +2,8 @@ package testProject;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Event;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -21,7 +23,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 
@@ -40,6 +41,7 @@ public class testBoard extends JPanel implements ActionListener {
 	private int killcount = 0;
 	private int escapedAliencount = 0;
 	private String name;
+	private testConnection connection;
 	
 	public testBoard() {
 		initializeBoard();
@@ -55,14 +57,6 @@ public class testBoard extends JPanel implements ActionListener {
 		setFocusable(true);
 		
 		alienList = new ArrayList<>();
-		
-//		for (int i = 0; i < 20; i++) {
-//			for (int j = 0; j < 1; j++) {
-//				testAlien alien = new testAlien(100 * i, -100 * i);
-//				alien.setRandomX();
-//				alienList.add(alien);
-//			}
-//		}
 		
 		spaceship = new testSpaceShip();
 		
@@ -81,6 +75,7 @@ public class testBoard extends JPanel implements ActionListener {
 				if (GAME_END) {
 					return;
 				}
+				endGame();
 				counter++;
 //				add alien
 				if (counter > MOEILIJKHEIDSFACTOR) {
@@ -137,6 +132,7 @@ public class testBoard extends JPanel implements ActionListener {
 		Font f = g.getFont();
 		g.setFont(new Font(f.getName(), Font.BOLD, 24));
 		g.setColor(Color.CYAN);
+//		g.drawString(name, 450, 20);
 		g.drawString("Kills: " + killcount, 450, 20);
 		g.drawString("Escaped aliens: " + escapedAliencount, 700, 20);
 		doDrawing(g);
@@ -214,6 +210,48 @@ public class testBoard extends JPanel implements ActionListener {
 		return false;
 	}
 	
+	public void endGame() {
+		if (killcount == 20) {
+			GAME_END = true;
+			
+			JFrame showResult = new JFrame();
+			showResult.setSize(400, 400);
+			showResult.setResizable(false);
+			showResult.setLocationRelativeTo(null);
+			
+			JPanel panel = new JPanel();
+			showResult.add(panel);
+			
+			JLabel label = new JLabel("VICTORY!");
+			JButton button = new JButton("OK");
+			
+			panel.add(label);
+			panel.add(button);
+
+			showResult.setVisible(true);
+		}
+		
+		if (escapedAliencount == 3) {
+			GAME_END = true;
+			
+			JFrame showResult = new JFrame();
+			showResult.setSize(400, 400);
+			showResult.setResizable(false);
+			showResult.setLocationRelativeTo(null);
+			
+			JPanel panel = new JPanel();
+			showResult.add(panel);
+			
+			JLabel label = new JLabel("DEFEAT!");
+			JButton button = new JButton("OK");
+			
+			panel.add(label);
+			panel.add(button);
+
+			showResult.setVisible(true);
+		}
+	}
+	
 	/**
 	 * A shot is fired by the spaceship and added to the list of shots.
 	 */
@@ -271,7 +309,7 @@ public class testBoard extends JPanel implements ActionListener {
 					
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						
+						connection.insertPlayerName(name);
 					}
 				});
 
