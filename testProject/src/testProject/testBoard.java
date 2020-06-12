@@ -18,11 +18,14 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 
@@ -52,6 +55,7 @@ public class testBoard extends JPanel implements ActionListener {
 	 * create a list for the fired shots, create a timer and let it start.
 	 */
 	private void initializeBoard() {
+		this.connection = new testConnection();
 		addKeyListener(new TAdapter());
 		setBackground(Color.black);
 		setFocusable(true);
@@ -211,19 +215,29 @@ public class testBoard extends JPanel implements ActionListener {
 	}
 	
 	public void endGame() {
-		if (killcount == 20) {
+		if (killcount == 20 || escapedAliencount == 3) {
 			GAME_END = true;
 			
 			JFrame showResult = new JFrame();
-			showResult.setSize(400, 400);
+			showResult.setSize(400, 100);
 			showResult.setResizable(false);
 			showResult.setLocationRelativeTo(null);
 			
 			JPanel panel = new JPanel();
 			showResult.add(panel);
 			
-			JLabel label = new JLabel("VICTORY!");
+			JLabel label = new JLabel("VICTORY!");				
+			if (escapedAliencount == 3) {
+				label.setText("DEFEAT");
+			}
 			JButton button = new JButton("OK");
+			button.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					showPlayerScores();
+				}
+			});
 			
 			panel.add(label);
 			panel.add(button);
@@ -231,25 +245,6 @@ public class testBoard extends JPanel implements ActionListener {
 			showResult.setVisible(true);
 		}
 		
-		if (escapedAliencount == 3) {
-			GAME_END = true;
-			
-			JFrame showResult = new JFrame();
-			showResult.setSize(400, 400);
-			showResult.setResizable(false);
-			showResult.setLocationRelativeTo(null);
-			
-			JPanel panel = new JPanel();
-			showResult.add(panel);
-			
-			JLabel label = new JLabel("DEFEAT!");
-			JButton button = new JButton("OK");
-			
-			panel.add(label);
-			panel.add(button);
-
-			showResult.setVisible(true);
-		}
 	}
 	
 	/**
@@ -287,40 +282,63 @@ public class testBoard extends JPanel implements ActionListener {
 				}
 			if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 				GAME_END = true;
-				JFrame dialog = new JFrame();
-				dialog.setSize(400, 400);
-				dialog.setResizable(false);
-				dialog.setLocationRelativeTo(null);
-				
-				JPanel panel = new JPanel();
-				dialog.add(panel);
-				
-				JLabel label = new JLabel("Geef een naam in.");
-				JTextField textfield = new JTextField();
-				textfield.setPreferredSize(new Dimension(100, 50));
-				name = textfield.getText();
-				JButton button = new JButton("OK");
-				
-				panel.add(label);
-				panel.add(textfield);
-				panel.add(button);
-				
-				button.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						connection.insertPlayerName(name);
-					}
-				});
-
-				dialog.setVisible(true);
+				showPlayerScores();
 			}
 			spaceship.keyReleased(e);
 		}
-		
+
 		@Override
 		public void keyPressed(KeyEvent e) {
 			spaceship.keyPressed(e);
 		}
+	}
+	
+	private void showPlayerScores() {
+		System.out.println("display player scores");
+		JFrame dialog = new JFrame();
+		dialog.setSize(400, 400);
+		dialog.setResizable(false);
+		dialog.setLocationRelativeTo(null);
+		
+		JPanel panel = new JPanel();
+		dialog.add(panel);
+		
+		JLabel label = new JLabel("Geef een naam in.");
+		JTextField textfield = new JTextField();
+		textfield.setPreferredSize(new Dimension(100, 50));
+		
+		JButton button = new JButton("OK");
+		
+		panel.add(label);
+		panel.add(textfield);
+		panel.add(button);
+		
+		JList<String> scoreslist = new JList<String>();
+		button.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				name = textfield.getText();
+				connection.insertScore(name, killcount-escapedAliencount);
+				updateListContents(scoreslist);
+			}
+		});
+		
+		updateListContents(scoreslist);
+		JScrollPane scrollpane = new JScrollPane(scoreslist);
+		scrollpane.setPreferredSize(new Dimension(300,200));
+		panel.add(scrollpane);
+
+		dialog.setVisible(true);
+	}
+
+	private void updateListContents(JList<String> scoreslist) {
+		List<String> retrieveScoresFromDB = connection.retrieveScoresFromDB();
+		DefaultListModel<String> listModel = new DefaultListModel();
+		for (int i = 0; i < retrieveScoresFromDB.size(); i++)
+		{
+		    listModel.addElement(retrieveScoresFromDB.get(i));
+		}
+		scoreslist.setModel(listModel);
 	}
 }
